@@ -1,0 +1,91 @@
+body, html {
+          
+    margin: 0;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url(https://unsplash.com/photos/d0ikvXIRAVA/download?force=true);
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  h1, h2, h3, h4, h5, h6, p {
+    font-family: 'Nunito', sans-serif;
+  }
+  .container {
+    padding: 50px 100px;
+    text-align: center;
+    background-color: white;
+     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    /* border-radius: 5px; */
+  }
+
+  .container:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+
+  .counter {
+    font-weight: bold;
+  }
+  
+  #datepicker {
+    margin-bottom: 8px
+  }
+
+  #datepicker, #goal {
+
+    font-size: 16px;
+    padding: 10px;
+    max-width: 70%;
+    height: 100%;
+  }
+
+  @media only screen and (max-width: 780px){
+
+    .container {
+      width: 80%;
+      margin-right: 20px;
+      margin-left: 20px;
+      padding: 50px 20px;
+    }
+
+    .progressbar-container {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+}
+
+
+
+.progressbar-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content:center;
+}
+
+.hidden {
+  display: none;
+}
+
+.progressbar-container p {
+  margin-right: 10px;
+  margin-bottom: 0;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#progressbar {
+  width: 80%;
+  height: 30px;
+}
+
+.counter-msg, #remaining-days {
+  margin-bottom: 0;
+}

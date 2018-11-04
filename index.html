@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>Addiction Tracker</title>
+      <script src="js/jquery-3.3.1.min.js"></script>
+      <link rel="stylesheet" href="js/themes/default.css">
+      <link rel="stylesheet" href="js/themes/default.date.css">
+      <!-- UIkit CSS -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.20/css/uikit.min.css" />
+      <!-- UIkit JS -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.20/js/uikit.min.js"></script>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:400,700,300">
+      <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+      <div class="container">
+          <form class="uk-form">
+            <input name="" id="datepicker" class="uk-input" placeholder="Pick a date">
+            <select class="uk-select" name="goal" id="goal">
+              <option value="0">Choose your goal</option>
+              <option value="30">30 Days</option>
+              <option value="60">60 Days</option>
+              <option value="90">90 Days</option>
+              <option value="120">120 Days</option>
+              <option value="360">1 Year</option>
+            </select>
+          </form>
+
+          <h2 class="counter-msg"></h2>
+
+          <div class="progressbar-container hidden">
+            <p>Your Journey:</p>
+            <progress id="progressbar" class="uk-progress" value="" max="100"></progress>
+          </div>
+          <p id="remaining-days"></p>
+      </div>
+
+      <script type="text/javascript" src="js/moment.js"></script>
+      <script src="js/picker.js"></script>
+      <script src="js/picker.date.js"></script>
+      <script>
+        var feedbackText, feedbackImage;
+
+        var date;
+        var goal;
+        var streak;
+
+        //initialize the datepicker input
+        $('#datepicker').pickadate({
+          max: new Date()
+        });
+
+        $(document).ready(function(){
+          if (typeof(Storage) !== "undefined" && localStorage.getItem("date") !== null) {
+          // Code for localStorage/sessionStorage.
+            date = new Date(localStorage.getItem("date"));
+            streak = getNumberOfDays();
+
+            goal = localStorage.getItem("goal")
+
+            updateGoalField();
+            updateUI(false);
+            updateProgressUI();
+          }
+          else {
+            updateUI(false);
+          }
+         
+        });
+
+        
+
+        function updateUI(formatted = true){
+
+          if ((date == undefined) || (date == null)  || (date == "Invalid Date")) {
+            $(".counter-msg").html("Please enter the date of the last time you relapsed.");
+          }
+          else {
+            streak = getNumberOfDays();
+            if (!formatted) $('#datepicker').val(moment(date).format("D MMMM, YYYY"));
+            $(".counter-msg").html("You've been free for <span class='counter'>"+ streak + "</span> " + (streak == 1 ? "day" : "days") + ", Champ!");
+          }
+        }
+
+        
+
+        function updateGoalField(){
+          if (goal != undefined) {
+            $("#goal").val(goal);
+          }
+        }
+
+        function getNumberOfDays(){
+          var today = moment(new Date());
+          var dateMoment = moment(date);
+
+          return parseInt(moment.duration(today.diff(dateMoment)).asDays());
+        }
+
+        $("#datepicker").change(function(){
+
+          date = new Date(this.value);
+          console.log(date);
+          
+
+          if (typeof(Storage) !== "undefined") {
+          // Code for localStorage/sessionStorage.
+            localStorage.setItem("date", date);
+          }
+
+          updateUI();
+          updateProgressUI();
+
+        });
+
+        $("#goal").change(function() {
+          goal = Number(this.value);
+
+          if (typeof(Storage) !== "undefined") {
+          // Code for localStorage/sessionStorage.
+            localStorage.setItem("goal", goal);
+          }
+
+          updateProgressUI();
+            
+          });
+
+        function updateProgressUI() {
+          if ( (goal != undefined) && (!isNaN(goal)) && (goal > 0) && ($("#datepicker").val() != "") ) {  
+            $(".progressbar-container").removeClass("hidden");
+            $("#remaining-days").removeClass("hidden");
+            if (isGoalAchieved()) {
+              $("#remaining-days").html("Well done! You've achieved this goal!");
+              $("#progressbar").val(100);
+            }
+            else {
+              let remainingDays = goal - streak;
+              let progressBarValue = Math.floor(streak * 100 / goal);
+              $('#progressbar').val(progressBarValue);
+              if (progressBarValue <= 35) {
+                $("#remaining-days").html("Starting is better than nothing! <b>" + remainingDays + " days left.</b>");
+              }
+              else if (progressBarValue <= 65) {
+                $("#remaining-days").html("You're halfaway there! <b>" + remainingDays + " days to go!</b>");
+              }
+              else {
+                $("#remaining-days").html("You're almost there! <b>Only " + remainingDays + " days left.</b>");
+              }
+              
+            }
+          }
+          else {
+            $(".progressbar-container").addClass("hidden");
+            $("#remaining-days").addClass("hidden");
+          }
+        }
+
+        function isGoalAchieved(){
+          return goal - streak <= 0; 
+        }
+      </script>
+    </body>
+  </html>
